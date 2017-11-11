@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private TextView mToysListTextView;
 
     @Override
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
          * Using findViewById, we get a reference to our TextView from xml. This allows us to
          * do things like set the text of the TextView.
          */
-        mToysListTextView = (TextView) findViewById(R.id.tv_toy_names);
+        mToysListTextView = findViewById(R.id.tv_toy_names);
 
         /*
          * This String array contains names of classic toys. After all, these are toy apps. We
@@ -53,5 +54,7 @@ public class MainActivity extends AppCompatActivity {
         for (String toyName : toyNames) {
             mToysListTextView.append(toyName + "\n\n\n");
         }
+
     }
+
 }
