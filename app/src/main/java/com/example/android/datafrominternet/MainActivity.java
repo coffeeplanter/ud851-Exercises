@@ -15,6 +15,8 @@
  */
 package com.example.android.datafrominternet;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -40,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSearchBoxEditText = (EditText) findViewById(R.id.et_search_box);
+        mSearchBoxEditText = findViewById(R.id.et_search_box);
 
-        mUrlDisplayTextView = (TextView) findViewById(R.id.tv_url_display);
-        mSearchResultsTextView = (TextView) findViewById(R.id.tv_github_search_results_json);
+        mUrlDisplayTextView = findViewById(R.id.tv_url_display);
+        mSearchResultsTextView = findViewById(R.id.tv_github_search_results_json);
     }
 
     /**
@@ -56,19 +58,30 @@ public class MainActivity extends AppCompatActivity {
         String githubQuery = mSearchBoxEditText.getText().toString();
         URL githubSearchUrl = NetworkUtils.buildUrl(githubQuery);
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
-        String githubSearchResults = null;
-        try {
-            githubSearchResults = NetworkUtils.getResponseFromHttpUrl(githubSearchUrl);
-            mSearchResultsTextView.setText(githubSearchResults);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // TODO (4) Create a new GithubQueryTask and call its execute method, passing in the url to query
+        new GithubQueryTask().execute(githubSearchUrl);
     }
 
-    // TODO (1) Create a class called GithubQueryTask that extends AsyncTask<URL, Void, String>
-    // TODO (2) Override the doInBackground method to perform the query. Return the results. (Hint: You've already written the code to perform the query)
-    // TODO (3) Override onPostExecute to display the results in the TextView
+    @SuppressLint("StaticFieldLeak")
+    private class GithubQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            String githubSearchResults = null;
+            try {
+                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(urls[0]);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+            return githubSearchResults;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s != null && !s.equals("")) {
+                mSearchResultsTextView.setText(s);
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -85,4 +98,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
