@@ -14,6 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -29,4 +30,5 @@
         android:fontFamily="monospace"
         android:textSize="42sp"
         tools:text="#42" />
+
 </FrameLayout>
