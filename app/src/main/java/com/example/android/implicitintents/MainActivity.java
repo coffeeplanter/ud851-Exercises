@@ -23,6 +23,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -49,13 +51,9 @@ public class MainActivity extends AppCompatActivity {
      * @param v Button that was clicked.
      */
     public void onClickOpenAddressButton(View v) {
-        String address = "Одинцово";
-        Uri uri = new Uri.Builder()
-                .scheme("geo")
-                .path("0,0")
-                .query(address)
-                .build();
-        Log.e("Debug", uri.toString());
+        String address = "Podolsk, Russia";
+        String addressUriTemplate = String.format(Locale.ENGLISH, "geo:0,0?q=%s", address);
+        Uri uri = Uri.parse(addressUriTemplate);
         showMap(uri);
     }
 
@@ -115,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showMap(Uri uri) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//        intent.setData(uri);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(uri);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
