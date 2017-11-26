@@ -30,6 +30,7 @@ public class ChildActivity extends AppCompatActivity {
         setContentView(R.layout.activity_child);
 
         /* Typical usage of findViewById... */
-        mDisplayText = (TextView) findViewById(R.id.tv_display);
+        mDisplayText = findViewById(R.id.tv_display);
     }
+
 }
