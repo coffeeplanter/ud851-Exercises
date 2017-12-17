@@ -23,6 +23,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
 
         Bundle queryBundle = new Bundle();
-        queryBundle.putString(SEARCH_QUERY_URL_EXTRA, githubQuery);
+        queryBundle.putString(SEARCH_QUERY_URL_EXTRA, githubSearchUrl.toString());
 
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<String> githubLoader = loaderManager.getLoader(GITHUB_SEARCH_LOADER);
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     return;
                 }
                 mLoadingIndicator.setVisibility(View.VISIBLE);
+                forceLoad();
             }
 
             @Nullable
@@ -151,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
                 String githubSearchResults;
                 try {
+                    Log.e("Debug", "URL: " + searchUrl);
                     URL url = new URL(searchUrl);
                     githubSearchResults = NetworkUtils.getResponseFromHttpUrl(url);
                     return githubSearchResults;
