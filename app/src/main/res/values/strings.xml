@@ -36,6 +36,9 @@
     <!-- Default for size preference -->
     <string name="pref_size_default" translatable="false">1</string>
 
+    <!-- Error message for the size preference -->
+    <string name="pref_size_label_error_message">Please select a number between 0.1 and 3</string>
+
 
     <!-- Label for the color preference -->
     <string name="pref_color_label">Shape Color</string>
