@@ -1,21 +1,5 @@
 package android.example.com.visualizerpreferences;
 
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,7 +27,7 @@ public class VisualizerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visualizer);
-        mVisualizerView = (VisualizerView) findViewById(R.id.activity_visualizer);
+        mVisualizerView = findViewById(R.id.activity_visualizer);
         setupSharedPreferences();
         setupPermissions();
     }
@@ -51,8 +35,12 @@ public class VisualizerActivity extends AppCompatActivity {
     private void setupSharedPreferences() {
         // Get all of the values from shared preferences to set it up
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        // TODO (4) Use resources here instead of the hard coded string and boolean
-        mVisualizerView.setShowBass(sharedPreferences.getBoolean("show_bass", true));
+        mVisualizerView.setShowBass(
+                sharedPreferences.getBoolean(
+                        getString(R.string.pref_show_bass_checkbox_key),
+                        getResources().getBoolean(R.bool.pref_show_bass_default)
+                )
+        );
         mVisualizerView.setShowMid(true);
         mVisualizerView.setShowTreble(true);
         mVisualizerView.setMinSizeScale(1);
@@ -106,7 +94,7 @@ public class VisualizerActivity extends AppCompatActivity {
             mAudioInputReader.restart();
         }
     }
-    
+
     /**
      * App Permissions for Audio
      **/
@@ -116,7 +104,7 @@ public class VisualizerActivity extends AppCompatActivity {
             // And if we're on SDK M or later...
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Ask again, nicely, for the permissions.
-                String[] permissionsWeNeed = new String[]{ Manifest.permission.RECORD_AUDIO };
+                String[] permissionsWeNeed = new String[]{Manifest.permission.RECORD_AUDIO};
                 requestPermissions(permissionsWeNeed, MY_PERMISSION_RECORD_AUDIO_REQUEST_CODE);
             }
         } else {
