@@ -1,0 +1,10 @@
+
+.DS_Store
+.gitignore
+.gradle/
+.idea/
+app/app.iml
+app/build/
+build/
+local.properties
+ud851-Exercises.iml
