@@ -16,17 +16,23 @@
 
 package com.example.android.todolist;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
+
+import com.example.android.todolist.data.TaskContract;
 
 
 public class AddTaskActivity extends AppCompatActivity {
 
     // Declare a member variable to keep track of a task's selected mPriority
     private int mPriority;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,22 +43,28 @@ public class AddTaskActivity extends AppCompatActivity {
         mPriority = 1;
     }
 
-
     /**
      * onClickAddTask is called when the "ADD" button is clicked.
      * It retrieves user input and inserts that new task data into the underlying database.
      */
     public void onClickAddTask(View view) {
-        // Not yet implemented
-        // TODO (6) Check if EditText is empty, if not retrieve input and store it in a ContentValues object
 
-        // TODO (7) Insert new task data via a ContentResolver
+        String input = ((EditText) findViewById(R.id.editTextTaskDescription)).getText().toString();
+        if (input.length() == 0) {
+            return;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, input);
+        contentValues.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
 
-        // TODO (8) Display the URI that's returned with a Toast
-        // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
+        Uri uri = getContentResolver().insert(TaskContract.TaskEntry.CONTENT_URI, contentValues);
+        if (uri != null) {
+            Toast.makeText(this, "Uri: " + uri.toString(), Toast.LENGTH_LONG).show();
+        }
+
+        finish();
 
     }
-
 
     /**
      * onPrioritySelected is called whenever a priority button is clicked.
@@ -67,4 +79,5 @@ public class AddTaskActivity extends AppCompatActivity {
             mPriority = 3;
         }
     }
+
 }
