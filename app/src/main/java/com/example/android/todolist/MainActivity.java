@@ -16,8 +16,10 @@
 
 package com.example.android.todolist;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // Set the RecyclerView to its corresponding view
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewTasks);
+        mRecyclerView = findViewById(R.id.recyclerViewTasks);
 
         // Set the layout for the RecyclerView to be a linear layout, which measures and
         // positions items within a RecyclerView into a linear list
@@ -67,24 +69,19 @@ public class MainActivity extends AppCompatActivity implements
          An ItemTouchHelper enables touch behavior (like swipe and move) on each ViewHolder,
          and uses callbacks to signal when a user is performing these actions.
          */
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
 
-            // Called when a user swipes left or right on a ViewHolder
+            // Called when a user swipes right on a ViewHolder
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                // Here is where you'll implement swipe to delete
-
-                // TODO (1) Construct the URI for the item to delete
-                //[Hint] Use getTag (from the adapter code) to get the id of the swiped item
-
-                // TODO (2) Delete a single row of data using a ContentResolver
-
-                // TODO (3) Restart the loader to re-query for all tasks after a deletion
-                
+                String id = viewHolder.itemView.getTag().toString();
+                Uri uri = TaskContract.TaskEntry.CONTENT_URI.buildUpon().appendPath(id).build();
+                getContentResolver().delete(uri, null, null);
+                getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, MainActivity.this);
             }
         }).attachToRecyclerView(mRecyclerView);
 
@@ -93,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements
          Attach an OnClickListener to it, so that when it's clicked, a new intent will be created
          to launch the AddTaskActivity.
          */
-        FloatingActionButton fabButton = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fabButton = findViewById(R.id.fab);
 
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements
      *
      * Implements the required callbacks to take care of loading data at all stages of loading.
      */
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<Cursor> onCreateLoader(int id, final Bundle loaderArgs) {
 
