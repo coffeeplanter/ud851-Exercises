@@ -1,0 +1,8 @@
+
+.DS_Store
+.gradle/
+.idea/
+*.iml
+build/
+droidtermsprovider/
+local.properties

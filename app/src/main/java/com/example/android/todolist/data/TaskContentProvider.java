@@ -79,7 +79,6 @@ public class TaskContentProvider extends ContentProvider {
         return true;
     }
 
-
     // Implement insert to handle requests to insert a single new row of data
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
@@ -113,7 +112,6 @@ public class TaskContentProvider extends ContentProvider {
         // Return constructed uri (this points to the newly inserted row of data)
         return returnUri;
     }
-
 
     // Implement query to handle requests for data by URI
     @Override
@@ -151,21 +149,22 @@ public class TaskContentProvider extends ContentProvider {
         return retCursor;
     }
 
-
     // Implement delete to delete a single row of data
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-
-        // TODO (1) Get access to the database and write URI matching code to recognize a single item
-
-        // TODO (2) Write the code to delete a single row of data
-        // [Hint] Use selections to delete an item by its row ID
-
-        // TODO (3) Notify the resolver of a change and return the number of items deleted
-
-        throw new UnsupportedOperationException("Not yet implemented");
+        final SQLiteDatabase db = mTaskDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        if (match == TASK_WITH_ID) {
+            String id = uri.getLastPathSegment();
+            int result = db.delete(TaskContract.TaskEntry.TABLE_NAME, "_id=?", new String[] {id});
+            if (result != 0 && getContext() != null) {
+                getContext().getContentResolver().notifyChange(uri, null);
+            }
+            return result;
+        } else {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
-
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
@@ -173,7 +172,6 @@ public class TaskContentProvider extends ContentProvider {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
-
 
     @Override
     public String getType(@NonNull Uri uri) {
